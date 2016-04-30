@@ -6,22 +6,23 @@ class Rch
 {
 
 public:
-	int chis, znam ;
+	int chis, znam ; // знаменателю достаточно uint
+	// почему поля public?
 	Rch()
 	{
 		chis = 0;
-		znam = 0;
+		znam = 0; // деление на ноль?
 	}
-	Rch( const Rch& r) 
+	Rch( const Rch& r) // генерируется автоматически
 	{
 		chis = r.chis;
 		znam = r.znam;
 	}
-	void print() 
+	void print() // friend operator?
 	{
 		cout << chis << "/"<< znam << " ";
 	}
-	void Evklid()
+	void Evklid() // где используется?
 	{
 		int k;
 		if (chis > znam)
@@ -41,16 +42,17 @@ public:
 			}
 		}
 	}
-	Rch & operator =(Rch& a) 
+	Rch & operator =(Rch& a) // генерируется автоматически
 	{
 		chis = a.chis;
 		znam = a.znam;
 		return *this;
 	}
-	Rch & operator *(Rch& a) 
+	Rch & operator *(Rch& a) // const method, const param
 	{
 		a.chis = chis*a.chis;
 		a.znam = znam*a.znam;
+		// общий код выносится в функцию -- евклид
 		int k;
 		if (a.chis > a.znam)
 		{
@@ -93,7 +95,7 @@ public:
 		}
 		return a;
 	}
-	 ~Rch()
+	 ~Rch() // такой генерируется автоматически
 	{
 	}
 
@@ -102,7 +104,7 @@ public:
 
 class matrix {
 		Rch** T;
-		int M;
+		int M; // размер бывает отрицательным?
 		int N;
 	public:
 		matrix(int m, int n) : T(NULL), M(m), N(n)
@@ -110,17 +112,17 @@ class matrix {
 			T = new Rch*[M]; 
 			for (int i = 0; i < M; i++)
 			{
-				T[i] = new Rch[N]; 
-				for (int j = 0; j < N; j++)
+				T[i] = new Rch[N]; // здесь new вызывает конструктор по умолчаю
+				for (int j = 0; j < N; j++) // эти строчки не нужны
 					T[i][j] = Rch();
 			}
 		}
-		Rch& operator () (int i, int j)
+		Rch& operator () (int i, int j) // индекс бывает отрицательным?
 		{
 			return T[i][j];
 		}
 
-		void print()
+		void print() // оператор?
 		{
 			for (int i = 0; i < M; i++)
 			{
@@ -130,7 +132,7 @@ class matrix {
 			}
 			cout << endl << endl;
 		}
-		matrix & operator &()
+		matrix & operator &() // а адрес объекта как теперь вычислять?
 		{
 			matrix U(N, M);
 
@@ -143,12 +145,13 @@ class matrix {
 			}
 			return U;
 		}
-		matrix  operator *(int a) 
+		matrix  operator *(int a) // const method
+		// может, умножать все-таки на Rch?
 		{
 			for (int i = 0; i < M; i++)
 			{
 				for (int j = 0; j < N; j++)
-					T[i][j].chis = T[i][j].chis*a;
+					T[i][j].chis = T[i][j].chis*a; // то есть a*M изменит M?
 			}
 			matrix U(M, N);
 
@@ -161,7 +164,7 @@ class matrix {
 			}
 			return U;
 		}
-		matrix  operator |(matrix& a) 
+		matrix  operator |(matrix& a) // const method, const param
 		{
 			
 			matrix U(M, N+a.N);
@@ -182,8 +185,9 @@ class matrix {
 			}
 			return U;
 		}
-		~matrix()
+		~matrix() // у вас ведь есть ресурсы, которые необходимо вернуть
 		{
+			// delete ???
 
 		}
 
